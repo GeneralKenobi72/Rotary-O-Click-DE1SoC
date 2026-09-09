@@ -1,0 +1,136 @@
+// SPDX-License-Identifier: GPL-2.0+
+/*
+ * Copyright (C) 2013 Steffen Trumtrar <s.trumtrar@pengutronix.de>
+ */
+
+#include <dt-bindings/gpio/gpio.h>
+#include <dt-bindings/interrupt-controller/irq.h>
+#include "socfpga_cyclone5.dtsi"
+
+/ {
+	model = "Terasic DE1-SoC";
+	compatible = "terasic,socfpga-cyclone5-sockit", "altr,socfpga-cyclone5", "altr,socfpga";
+
+	chosen {
+		bootargs = "earlyprintk";
+		stdout-path = "serial0:115200n8";
+	};
+
+	memory@0 {
+		name = "memory";
+		device_type = "memory";
+		reg = <0x0 0x40000000>; /* 1GB */
+	};
+
+	aliases {
+		/* this allow the ethaddr uboot environmnet variable contents
+		 * to be added to the gmac1 device tree blob.
+		 */
+		ethernet0 = &gmac1;
+	};
+
+	soc {
+		status = "okay";
+
+		gpio_altr: gpio@ff200000 {
+			compatible = "altr,pio-1.0";
+			reg = <0xff200000 0x10>;
+			#gpio-cells = <2>;
+			gpio-controller;
+			altr,ngpio = <16>;		
+        		interrupts = <0 40 3>;
+                	altr,interrupt-type = <IRQ_TYPE_EDGE_BOTH>;
+        		#interrupt-cells = <2>;
+        		interrupt-controller;
+			status = "okay";
+		};
+	};
+
+	gpio-keys {
+		compatible = "gpio-keys";
+
+		button_click {
+			label = "Rotary O click button";
+			gpios = <&gpio_altr 2 0>;
+			linux,code = <17>;
+			status = "okay";
+		};
+
+		hps_key {
+			label = "hps_key";
+			gpios = <&portb 25 0>;	/* HPS_GPIO54 */
+			linux,code = <16>;	/* Q */
+		};
+
+	};
+
+	regulator_3_3v: regulator {
+		compatible = "regulator-fixed";
+		regulator-name = "VCC3P3";
+		regulator-min-microvolt = <3300000>;
+		regulator-max-microvolt = <3300000>;
+	};
+
+    	rotary-encoder {
+        	compatible = "rotary-encoder";
+		gpios = <&gpio_altr 0 GPIO_ACTIVE_HIGH>,
+			<&gpio_altr 1 GPIO_ACTIVE_HIGH>;
+
+		linux,axis = <0>;
+		rotary-encoder,encoding = "gray";
+		rotary-encoder,relative-axis;
+		status = "okay";
+		rotary-encoder,steps-per-period = <2>;
+		// debounce-interval = <5>;
+    	};
+};
+
+&fpga_bridge0 {
+	status = "okay";
+};
+
+&gmac1 {
+	status = "okay";
+	phy-mode = "rgmii";
+
+	rxd0-skew-ps = <0>;
+	rxd1-skew-ps = <0>;
+	rxd2-skew-ps = <0>;
+	rxd3-skew-ps = <0>;
+	txen-skew-ps = <0>;
+	txc-skew-ps = <2600>;
+	rxdv-skew-ps = <0>;
+	rxc-skew-ps = <2000>;
+};
+
+&gpio0 {	/* GPIO 0..29 */
+	status = "okay";
+};
+
+&gpio1 {	/* GPIO 30..57 */
+	status = "okay";
+};
+
+&gpio2 {	/* GPIO 58..66 (HLGPI 0..13 at offset 13) */
+	status = "okay";
+};
+
+&mmc0 {
+	vmmc-supply = <&regulator_3_3v>;
+	vqmmc-supply = <&regulator_3_3v>;
+	status = "okay";
+};
+
+&usb1 {
+	status = "okay";
+};
+
+&spi0 {
+	status = "okay";
+	
+	spidev@0 {
+		compatible = "rohm,dh2228fv";
+		reg = <0>;
+		spi-max-frequency = <1000000>;
+	};
+};
