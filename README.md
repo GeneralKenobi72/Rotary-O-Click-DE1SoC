@@ -91,7 +91,7 @@ kontroliše preko SPI0 (izveden na GPIO_0).
 | SDI / SDO / SCK / CS      | SPI0 (spidev0.0)          | SPI linija za 74HC595 shift registre   |
 | VCC / GND                 | 3.3V / 5V / GND (GPIO_1)  | Napajanje modula                       |
 
-<img src="images/IMG_20260908_085404_452.jpg" style="width:30%; transform: rotate(270deg);">
+<img src="images/IMG_20260908_085404_452.jpg" style="width:60%; transform: rotate(270deg);">
 
 ## Konfiguracija
 
@@ -320,7 +320,7 @@ finalnoj aplikaciji se ne oslanja na funkcionalnost tastera.
 
 ## Demonstracija rada
 
-<img src="images/ezgif-607002f7dbe0a09b.gif" style="width:30%; transform: rotate(270deg);" alt="Demonstracija rada">
+<img src="images/ezgif-607002f7dbe0a09b.gif" style="width:150%; transform: rotate(270deg);" alt="Demonstracija rada">
 
 ## Upotreba AI alata
 
